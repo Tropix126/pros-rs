@@ -2,7 +2,7 @@ use core::ffi::c_double;
 
 use pros_sys::PROS_ERR;
 
-use crate::error::{bail_on, PortError};
+use crate::{error::{bail_on, PortError}, smart_device::SmartDevice};
 
 pub struct DistanceSensor {
     port: u8,
@@ -38,5 +38,15 @@ impl DistanceSensor {
         let confidence =
             unsafe { bail_on!(PROS_ERR, pros_sys::distance_get_confidence(self.port)) } as f32;
         Ok(confidence * 100.0 / 63.0)
+    }
+}
+
+impl SmartDevice for DistanceSensor {
+    fn port(&self) -> u8 {
+        self.port
+    }
+
+    fn installed(&self) -> bool {
+        self.distance().is_ok()
     }
 }

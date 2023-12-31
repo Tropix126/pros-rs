@@ -1,7 +1,7 @@
 use pros_sys::{PROS_ERR, PROS_ERR_F};
 use snafu::Snafu;
 
-use crate::error::{bail_on, map_errno, PortError};
+use crate::{error::{bail_on, map_errno, PortError}, smart_device::SmartDevice};
 
 pub struct GpsStatus {
     pub x: f64,
@@ -70,6 +70,21 @@ impl GpsSensor {
             bail_on!(PROS_ERR, pros_sys::gps_tare_rotation(self.port));
         }
         Ok(())
+    }
+}
+
+impl SmartDevice for GpsSensor {
+    fn port(&self) -> u8 {
+        self.port
+    }
+
+    fn installed(&self) -> bool {
+        if let Err(error) = self.status() {
+            if let GpsError::Port { source: _ } = error {
+                return false;
+            } 
+        }
+        true
     }
 }
 

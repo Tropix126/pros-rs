@@ -5,7 +5,7 @@ use snafu::Snafu;
 
 use crate::{
     error::{bail_errno, bail_on, map_errno, PortError},
-    lvgl::colors::LcdColor,
+    lvgl::colors::LcdColor, smart_device::SmartDevice,
 };
 
 /// Represents a vision sensor plugged into the vex.
@@ -107,6 +107,16 @@ impl VisionSensor {
                 }
             };
         }
+    }
+}
+
+impl SmartDevice for VisionSensor {
+    fn port(&self) -> u8 {
+        self.port
+    }
+
+    fn installed(&self) -> bool {
+        self.num_objects().is_ok()
     }
 }
 

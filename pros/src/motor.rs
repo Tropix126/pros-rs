@@ -3,7 +3,7 @@ use snafu::Snafu;
 
 use crate::{
     error::{bail_on, map_errno, PortError},
-    position::Position,
+    position::Position, smart_device::SmartDevice,
 };
 
 /// The basic motor struct.
@@ -200,6 +200,21 @@ impl Motor {
     /// Returns a future that completes when the motor reports that it has stopped.
     pub fn wait_until_stopped(&self) -> MotorStoppedFuture {
         MotorStoppedFuture { motor: *self }
+    }
+}
+
+impl SmartDevice for Motor {
+    fn port(&self) -> u8 {
+        self.port
+    }
+
+    fn installed(&self) -> bool {
+        if let Err(error) = self.get_state() {
+            if let MotorError::Port { source: _ } = error {
+                return false;
+            } 
+        }
+        true
     }
 }
 

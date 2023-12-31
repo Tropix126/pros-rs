@@ -27,6 +27,7 @@ pub mod competition;
 pub mod link;
 pub mod lvgl;
 pub mod usd;
+pub mod smart_device;
 
 pub use async_trait::async_trait;
 
@@ -314,6 +315,7 @@ pub mod prelude {
     pub use crate::motor::*;
     pub use crate::pid::*;
     pub use crate::position::*;
+    pub use crate::smart_device::*;
     pub use crate::sensors::distance::*;
     pub use crate::sensors::gps::*;
     pub use crate::sensors::rotation::*;

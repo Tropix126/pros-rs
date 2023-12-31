@@ -2,7 +2,7 @@ use pros_sys::PROS_ERR;
 
 use crate::{
     error::{bail_on, PortError},
-    position::Position,
+    position::Position, smart_device::SmartDevice,
 };
 
 pub struct RotationSensor {
@@ -65,5 +65,15 @@ impl RotationSensor {
         Ok(unsafe {
             Position::from_degrees(bail_on!(PROS_ERR, pros_sys::rotation_get_angle(self.port)) as _)
         })
+    }
+}
+
+impl SmartDevice for RotationSensor {
+    fn port(&self) -> u8 {
+        self.port
+    }
+
+    fn installed(&self) -> bool {
+        self.position().is_ok()
     }
 }
