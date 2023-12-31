@@ -21,21 +21,44 @@ pub struct GpsSensor {
 }
 
 impl GpsSensor {
-    pub fn new(port: u8) -> Result<Self, GpsError> {
+    pub fn new(port: u8, x: f64, y: f64, heading: f64, x_offset: f64, y_offset: f64) -> Result<Self, GpsError> {
         unsafe {
             bail_on!(
                 PROS_ERR,
-                pros_sys::gps_initialize_full(port, 0.0, 0.0, 0.0, 0.0, 0.0)
+                pros_sys::gps_initialize_full(port, x, y, heading, x_offset, y_offset)
             );
         }
 
         Ok(Self { port })
     }
 
-    pub fn set_offset(&self, x: f64, y: f64) {
+    pub fn set_offset(&self, x: f64, y: f64) -> Result<(), GpsError> {
         unsafe {
-            pros_sys::gps_set_offset(self.port, x, y);
+            bail_on!(PROS_ERR, pros_sys::gps_set_offset(self.port, x, y));
         }
+        Ok(())
+    }
+
+    pub fn offset(&self) -> Result<(f64, f64), GpsError> {
+        let mut output: (&mut f64, &mut f64);
+        
+        unsafe { bail_on!(PROS_ERR, pros_sys::gps_get_offset(self.port, output.0, output.1)) }
+
+        Ok((*output.0, *output.1))
+    }
+
+    pub fn set_position(&self, x: f64, y: f64, heading: f64) -> Result<(), GpsError> {
+        unsafe {
+            bail_on!(PROS_ERR, pros_sys::gps_set_position(self.port, x, y, heading));
+        }
+        Ok(())
+    }
+
+    pub fn set_imu_data_rate(&self, rate: core::time::Duration) -> Result<(), GpsError> {
+        unsafe {
+            bail_on!(PROS_ERR, pros_sys::gps_set_data_rate(self.port, rate.as_millis() as u32));
+        }
+        Ok(())
     }
 
     pub fn rms_error(&self) -> Result<f64, GpsError> {
