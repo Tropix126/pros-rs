@@ -11,13 +11,13 @@
     "linker-flavor": "gcc",
     "llvm-target": "armv7a-none-eabi",
     "max-atomic-width": 64,
-    "panic-strategy": "abort",
+    "panic-strategy": "unwind",
     "post-link-args": {
         "gcc": [
             "-nostartfiles",
             "-nostdlib",
             "-Wl,-Tv5.ld,-Tv5-common.ld,--gc-sections",
-            "-Wl,--start-group,-lgcc,-lpros,-lc,--end-group"
+            "-Wl,--start-group,-lgcc,-lpros,-lstdc++,-lc,--end-group"
         ]
     },
     "relocation-model": "static",
