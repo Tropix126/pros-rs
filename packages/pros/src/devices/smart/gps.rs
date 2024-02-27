@@ -109,6 +109,14 @@ impl SmartDevice for GpsSensor {
     }
 }
 
+impl TryFrom<SmartPort> for GpsSensor {
+    type Error = GpsError;
+
+    fn try_from(port: SmartPort) -> Result<Self, Self::Error> {
+        Self::new(port)
+    }
+}
+
 #[derive(Debug, Snafu)]
 /// Errors that can occur when using a GPS sensor.
 pub enum GpsError {

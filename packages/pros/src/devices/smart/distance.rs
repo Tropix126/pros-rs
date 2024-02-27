@@ -52,6 +52,12 @@ impl DistanceSensor {
     }
 }
 
+impl From<SmartPort> for DistanceSensor {
+    fn from(port: SmartPort) -> Self {
+        Self::new(port)
+    }
+}
+
 impl SmartDevice for DistanceSensor {
     fn port_index(&self) -> u8 {
         self.port.index()

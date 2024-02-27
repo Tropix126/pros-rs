@@ -55,6 +55,12 @@ impl AdiExpander {
     }
 }
 
+impl From<SmartPort> for AdiExpander {
+    fn from(port: SmartPort) -> Self {
+        Self::new(port)
+    }
+}
+
 impl SmartDevice for AdiExpander {
     fn port_index(&self) -> u8 {
         self.port.index()

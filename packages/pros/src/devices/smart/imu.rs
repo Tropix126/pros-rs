@@ -269,6 +269,12 @@ impl SmartDevice for InertialSensor {
     }
 }
 
+impl From<SmartPort> for InertialSensor {
+    fn from(port: SmartPort) -> Self {
+        Self::new(port)
+    }
+}
+
 /// Standard quaternion consisting of a vector defining an axis of rotation
 /// and a rotation value about the axis.
 #[derive(Default, Debug, Clone, Copy, PartialEq)]
